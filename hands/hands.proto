@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/f6o/nopos/protos/hands";
+
+service Dealer {
+  rpc DealCard (DealRequest) returns (Card) {}
+}
+
+enum Suits {
+  SUITS_ANY = 0;
+  SUITS_SPADE = 1;
+  SUITS_HEART = 2;
+  SUITS_CLUB  = 3;
+  SUITS_DIAMOND = 4;
+}
+
+message DealRequest {
+  uint64 seed = 1;
+}
+
+message Card {
+  Suits suit = 1;
+  uint32 rank = 2;
+}
+
+message Hands {
+  repeated Card cards = 1;
+}
