@@ -2,26 +2,14 @@ package main
 
 import (
 	"log"
-	"net"
 
-	hands "github.com/f6o/napos/hands"
-	"google.golang.org/grpc"
+	"github.com/f6o/napos/server"
 )
 
-type delaerServer struct {
-	hands.UnimplementedDealerServer
-}
-
 func main() {
-	lis, err := net.Listen("tcp", ":3333")
+	server := server.SimpleDealerServer{}
+	err := server.StartServer()
 	if err != nil {
-		log.Fatalln("error")
-	}
-
-	grpcServer := grpc.NewServer()
-	dealerServer := delaerServer{}
-	hands.RegisterDealerServer(grpcServer, dealerServer)
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed")
+		log.Fatalln(err)
 	}
 }
