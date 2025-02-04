@@ -1,2 +1,8 @@
+## files
 *~
 .gh_token
+
+## directories
+.vscode
+build
+target
