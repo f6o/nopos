@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net"
 
 	hands "github.com/f6o/napos/hands"
@@ -28,8 +29,12 @@ func (dealer SimpleDealerServer) DealCard(ctx context.Context, req *hands.DealRe
 	return card, nil
 }
 
-func (dealer SimpleDealerServer) StartServer() error {
-	lis, err := net.Listen("tcp", ":3333")
+func (dealer SimpleDealerServer) StartServer(port int) error {
+	if port <= 0 || port > 65535 {
+		return fmt.Errorf("invalid port number: %d", port)
+	}
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		return err
 	}

@@ -8,7 +8,7 @@ import (
 
 func main() {
 	server := server.SimpleDealerServer{}
-	err := server.StartServer()
+	err := server.StartServer(3333)
 	if err != nil {
 		log.Fatalln(err)
 	}
