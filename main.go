@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-type handServer {
-	Unimplemented
+type delaerServer struct {
+	hands.UnimplementedDealerServer
 }
 
 func main() {
@@ -19,7 +19,8 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	hands.RegisterDealerServer(grpcServer,)
+	dealerServer := delaerServer{}
+	hands.RegisterDealerServer(grpcServer, dealerServer)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed")
 	}
