@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	hands "github.com/f6o/napos/hands"
 	"golang.org/x/exp/rand"
@@ -14,14 +15,28 @@ type SimpleDealerServer struct {
 	hands.UnimplementedDealerServer
 }
 
-func (dealer SimpleDealerServer) DealCard(ctx context.Context, req *hands.DealRequest) (*hands.Card, error) {
-	rand.Seed(req.Seed)
-	suits := []hands.Suits{
+var suits []hands.Suits
+
+func init() {
+	suits = []hands.Suits{
 		hands.Suits_SUITS_SPADE,
 		hands.Suits_SUITS_HEART,
 		hands.Suits_SUITS_CLUB,
 		hands.Suits_SUITS_DIAMOND,
 	}
+}
+
+func (dealer SimpleDealerServer) DealCard(ctx context.Context, req *hands.DealRequest) (*hands.Card, error) {
+	rand.Seed(req.Seed)
+	card := &hands.Card{
+		Suit: suits[rand.Intn(len(suits))],
+		Rank: uint32(rand.Intn(13) + 1), // Rank from 1 to 13
+	}
+	return card, nil
+}
+
+func (dealer SimpleDealerServer) DealRandomCard(ctx context.Context, req *hands.DealRandomCardRequest) (*hands.Card, error) {
+	rand.Seed(uint64(time.Now().UnixNano()))
 	card := &hands.Card{
 		Suit: suits[rand.Intn(len(suits))],
 		Rank: uint32(rand.Intn(13) + 1), // Rank from 1 to 13

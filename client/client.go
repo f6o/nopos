@@ -20,8 +20,9 @@ func main() {
 	client := hands.NewDealerClient(conn)
 
 	// Deal a card
-	req := &hands.DealRequest{Seed: 12345}
-	card, err := client.DealCard(context.Background(), req)
+	// req := &hands.DealRequest{Seed: 12345}
+	// card, err := client.DealCard(context.Background(), req)
+	card, err := client.DealRandomCard(context.Background(), &hands.DealRandomCardRequest{})
 	if err != nil {
 		log.Fatalf("could not deal card: %v", err)
 	}

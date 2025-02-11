@@ -4,6 +4,7 @@ option go_package = "github.com/f6o/nopos/protos/hands";
 
 service Dealer {
   rpc DealCard (DealRequest) returns (Card) {}
+  rpc DealRandomCard (DealRandomCardRequest) returns (Card) {}
 }
 
 enum Suits {
@@ -12,6 +13,9 @@ enum Suits {
   SUITS_HEART = 2;
   SUITS_CLUB  = 3;
   SUITS_DIAMOND = 4;
+}
+
+message DealRandomCardRequest {
 }
 
 message DealRequest {

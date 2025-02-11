@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Dealer_DealCard_FullMethodName = "/Dealer/DealCard"
+	Dealer_DealCard_FullMethodName       = "/Dealer/DealCard"
+	Dealer_DealRandomCard_FullMethodName = "/Dealer/DealRandomCard"
 )
 
 // DealerClient is the client API for Dealer service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DealerClient interface {
 	DealCard(ctx context.Context, in *DealRequest, opts ...grpc.CallOption) (*Card, error)
+	DealRandomCard(ctx context.Context, in *DealRandomCardRequest, opts ...grpc.CallOption) (*Card, error)
 }
 
 type dealerClient struct {
@@ -47,11 +49,22 @@ func (c *dealerClient) DealCard(ctx context.Context, in *DealRequest, opts ...gr
 	return out, nil
 }
 
+func (c *dealerClient) DealRandomCard(ctx context.Context, in *DealRandomCardRequest, opts ...grpc.CallOption) (*Card, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Card)
+	err := c.cc.Invoke(ctx, Dealer_DealRandomCard_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DealerServer is the server API for Dealer service.
 // All implementations must embed UnimplementedDealerServer
 // for forward compatibility.
 type DealerServer interface {
 	DealCard(context.Context, *DealRequest) (*Card, error)
+	DealRandomCard(context.Context, *DealRandomCardRequest) (*Card, error)
 	mustEmbedUnimplementedDealerServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedDealerServer struct{}
 
 func (UnimplementedDealerServer) DealCard(context.Context, *DealRequest) (*Card, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DealCard not implemented")
+}
+func (UnimplementedDealerServer) DealRandomCard(context.Context, *DealRandomCardRequest) (*Card, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DealRandomCard not implemented")
 }
 func (UnimplementedDealerServer) mustEmbedUnimplementedDealerServer() {}
 func (UnimplementedDealerServer) testEmbeddedByValue()                {}
@@ -104,6 +120,24 @@ func _Dealer_DealCard_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Dealer_DealRandomCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DealRandomCardRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DealerServer).DealRandomCard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Dealer_DealRandomCard_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DealerServer).DealRandomCard(ctx, req.(*DealRandomCardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Dealer_ServiceDesc is the grpc.ServiceDesc for Dealer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var Dealer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DealCard",
 			Handler:    _Dealer_DealCard_Handler,
+		},
+		{
+			MethodName: "DealRandomCard",
+			Handler:    _Dealer_DealRandomCard_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
