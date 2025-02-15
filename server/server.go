@@ -6,6 +6,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/f6o/napos/db"
 	hands "github.com/f6o/napos/hands"
 	"golang.org/x/exp/rand"
 	"google.golang.org/grpc"
@@ -40,6 +41,10 @@ func (dealer SimpleDealerServer) DealRandomCard(ctx context.Context, req *hands.
 	card := &hands.Card{
 		Suit: suits[rand.Intn(len(suits))],
 		Rank: uint32(rand.Intn(13) + 1), // Rank from 1 to 13
+	}
+	err := db.SaveHandHistory(card, "user1")
+	if err != nil {
+		return card, err
 	}
 	return card, nil
 }
