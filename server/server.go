@@ -43,7 +43,7 @@ func (dealer SimpleDealerServer) DealRandomCard(ctx context.Context, req *hands.
 		Suit: suits[rand.Intn(len(suits))],
 		Rank: uint32(rand.Intn(13) + 1), // Rank from 1 to 13
 	}
-	err := db.SaveHandHistory(card, "user1")
+	err := db.SaveHandHistory(card, "cm76718sn0000l3dm2hy2cr21")
 	if err != nil {
 		return card, err
 	}
