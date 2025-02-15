@@ -40,7 +40,7 @@ message ListUsersRequest {
 }
 
 message ListUsersResponse {
-  repeated User users = 1;
+  repeated UserWithId users = 1;
 }
 
 message AddUserRequest {
@@ -49,5 +49,10 @@ message AddUserRequest {
 
 message User {
   string displayName = 1;
+}
+
+message UserWithId {
+  string id = 1;
+  string displayName = 2;
 }
 
