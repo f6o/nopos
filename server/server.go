@@ -51,11 +51,12 @@ func (dealer SimpleDealerServer) DealRandomCard(ctx context.Context, req *hands.
 }
 
 func (dealer SimpleDealerServer) AddUser(ctx context.Context, req *hands.AddUserRequest) (*hands.User, error) {
-	err := db.CreateUser(req.DisplayName)
+	displayName := req.GetUser().DisplayName
+	err := db.CreateUser(displayName)
 	if err != nil {
 		return nil, err
 	}
-	return &hands.User{DisplayName: req.DisplayName}, nil
+	return &hands.User{DisplayName: displayName}, nil
 }
 
 func (dealer SimpleDealerServer) StartServer(port int) error {

@@ -62,7 +62,11 @@ func addUser(client hands.GameManagerClient) {
 	}
 	displayName = displayName[:len(displayName)-1] // Remove the newline character
 
-	if _, err := client.AddUser(context.Background(), &hands.AddUserRequest{DisplayName: displayName}); err != nil {
+	user := &hands.User{
+		DisplayName: displayName,
+	}
+
+	if _, err := client.AddUser(context.Background(), &hands.AddUserRequest{User: user}); err != nil {
 		log.Fatalf("could not add user: %v", err)
 	}
 }

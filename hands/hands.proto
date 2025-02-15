@@ -33,10 +33,18 @@ message Hands {
 
 service GameManager {
   rpc AddUser (AddUserRequest) returns (User) {}
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse) {}
+}
+
+message ListUsersRequest {
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
 }
 
 message AddUserRequest {
-  string displayName = 1;
+  User user = 1;
 }
 
 message User {

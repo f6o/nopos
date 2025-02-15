@@ -159,7 +159,8 @@ var Dealer_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	GameManager_AddUser_FullMethodName = "/GameManager/AddUser"
+	GameManager_AddUser_FullMethodName   = "/GameManager/AddUser"
+	GameManager_ListUsers_FullMethodName = "/GameManager/ListUsers"
 )
 
 // GameManagerClient is the client API for GameManager service.
@@ -167,6 +168,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GameManagerClient interface {
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*User, error)
+	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 }
 
 type gameManagerClient struct {
@@ -187,11 +189,22 @@ func (c *gameManagerClient) AddUser(ctx context.Context, in *AddUserRequest, opt
 	return out, nil
 }
 
+func (c *gameManagerClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUsersResponse)
+	err := c.cc.Invoke(ctx, GameManager_ListUsers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GameManagerServer is the server API for GameManager service.
 // All implementations must embed UnimplementedGameManagerServer
 // for forward compatibility.
 type GameManagerServer interface {
 	AddUser(context.Context, *AddUserRequest) (*User, error)
+	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	mustEmbedUnimplementedGameManagerServer()
 }
 
@@ -204,6 +217,9 @@ type UnimplementedGameManagerServer struct{}
 
 func (UnimplementedGameManagerServer) AddUser(context.Context, *AddUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+}
+func (UnimplementedGameManagerServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
 }
 func (UnimplementedGameManagerServer) mustEmbedUnimplementedGameManagerServer() {}
 func (UnimplementedGameManagerServer) testEmbeddedByValue()                     {}
@@ -244,6 +260,24 @@ func _GameManager_AddUser_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GameManager_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameManagerServer).ListUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GameManager_ListUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameManagerServer).ListUsers(ctx, req.(*ListUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GameManager_ServiceDesc is the grpc.ServiceDesc for GameManager service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -254,6 +288,10 @@ var GameManager_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddUser",
 			Handler:    _GameManager_AddUser_Handler,
+		},
+		{
+			MethodName: "ListUsers",
+			Handler:    _GameManager_ListUsers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
