@@ -71,6 +71,18 @@ func addUser(client hands.GameManagerClient) {
 	}
 }
 
+func listUsers(client hands.GameManagerClient) {
+	users, err := client.ListUsers(context.Background(), &hands.ListUsersRequest{})
+	if err != nil {
+		log.Fatalf("could not list users: %v", err)
+	}
+
+	log.Println("Users:")
+	for _, user := range users.Users {
+		log.Printf("Display name: %s", user.DisplayName)
+	}
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		log.Fatalf("expected 'freq' subcommand")
@@ -92,6 +104,9 @@ func main() {
 	case "adduser":
 		client := hands.NewGameManagerClient(conn)
 		addUser(client)
+	case "list-users":
+		client := hands.NewGameManagerClient(conn)
+		listUsers(client)
 	default:
 		log.Fatalf("unknown subcommand: %s", subcommand)
 	}
