@@ -67,7 +67,8 @@ func (dealer SimpleDealerServer) ListUsers(ctx context.Context, req *hands.ListU
 
 	response := &hands.ListUsersResponse{}
 	for _, user := range users {
-		response.Users = append(response.Users, &hands.User{DisplayName: user.DisplayName})
+		data := &hands.UserWithId{DisplayName: user.DisplayName, Id: user.ID}
+		response.Users = append(response.Users, data)
 	}
 
 	return response, nil

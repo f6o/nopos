@@ -79,7 +79,7 @@ func listUsers(client hands.GameManagerClient) {
 
 	log.Println("Users:")
 	for _, user := range users.Users {
-		log.Printf("Display name: %s", user.DisplayName)
+		log.Printf("%10s %s", user.Id, user.DisplayName)
 	}
 }
 
