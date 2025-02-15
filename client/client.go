@@ -98,10 +98,10 @@ func main() {
 	defer conn.Close()
 
 	switch subcommand {
-	case "freq":
+	case "print-freq":
 		client := hands.NewDealerClient(conn)
 		printFreq(client)
-	case "adduser":
+	case "add-user":
 		client := hands.NewGameManagerClient(conn)
 		addUser(client)
 	case "list-users":
