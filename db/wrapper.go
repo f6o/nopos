@@ -29,8 +29,8 @@ func SaveHandHistory(card *hands.Card, userId String) error {
 
 	history, err := client.HandHistory.CreateOne(
 		HandHistory.User.Link(User.ID.Equals(user.ID)),
-		HandHistory.Suit.Set(string(card.Suit)),
-		HandHistory.Rank.Set(string(card.Rank)),
+		HandHistory.Suit.Set(int(card.Suit.Number())),
+		HandHistory.Rank.Set(int(card.Rank)),
 	).Exec(ctx)
 
 	if err != nil {

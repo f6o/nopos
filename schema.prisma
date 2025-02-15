@@ -23,6 +23,6 @@ model HandHistory {
     user User @relation(fields: [userId], references: [id])
     userId String
 
-    suit String
-    rank String
+    suit Int
+    rank Int
 }
