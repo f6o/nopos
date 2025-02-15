@@ -22,14 +22,7 @@ model HandHistory {
 
     user User @relation(fields: [userId], references: [id])
     userId String
-    hand Hand @relation(fields: [handId], references: [id])
-    handId String
-}
 
-model Hand {
-    id    String  @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    handHistories HandHistory[]
+    suit String
+    rank String
 }
