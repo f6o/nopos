@@ -59,6 +59,20 @@ func (dealer SimpleDealerServer) AddUser(ctx context.Context, req *hands.AddUser
 	return &hands.User{DisplayName: displayName}, nil
 }
 
+func (dealer SimpleDealerServer) ListUsers(ctx context.Context, req *hands.ListUsersRequest) (*hands.ListUsersResponse, error) {
+	users, err := db.ListUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &hands.ListUsersResponse{}
+	for _, user := range users {
+		response.Users = append(response.Users, &hands.User{DisplayName: user.DisplayName})
+	}
+
+	return response, nil
+}
+
 func (dealer SimpleDealerServer) StartServer(port int) error {
 	if port <= 0 || port > 65535 {
 		return fmt.Errorf("invalid port number: %d", port)

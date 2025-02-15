@@ -66,3 +66,25 @@ func CreateUser(displayName string) error {
 	log.Printf("User created: %v", user)
 	return nil
 }
+
+func ListUsers() ([]UserModel, error) {
+	client := NewClient()
+	if err := client.Connect(); err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err := client.Disconnect(); err != nil {
+			panic(err)
+		}
+	}()
+
+	ctx := context.Background()
+
+	users, err := client.User.FindMany().Exec(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to find users")
+	}
+
+	return users, nil
+}
