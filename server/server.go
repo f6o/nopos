@@ -14,6 +14,7 @@ import (
 
 type SimpleDealerServer struct {
 	hands.UnimplementedDealerServer
+	hands.UnimplementedGameManagerServer
 }
 
 var suits []hands.Suits
@@ -49,6 +50,14 @@ func (dealer SimpleDealerServer) DealRandomCard(ctx context.Context, req *hands.
 	return card, nil
 }
 
+func (dealer SimpleDealerServer) AddUser(ctx context.Context, req *hands.AddUserRequest) (*hands.User, error) {
+	err := db.CreateUser(req.DisplayName)
+	if err != nil {
+		return nil, err
+	}
+	return &hands.User{DisplayName: req.DisplayName}, nil
+}
+
 func (dealer SimpleDealerServer) StartServer(port int) error {
 	if port <= 0 || port > 65535 {
 		return fmt.Errorf("invalid port number: %d", port)
@@ -61,6 +70,7 @@ func (dealer SimpleDealerServer) StartServer(port int) error {
 
 	grpcServer := grpc.NewServer()
 	hands.RegisterDealerServer(grpcServer, dealer)
+	hands.RegisterGameManagerServer(grpcServer, dealer)
 	if err := grpcServer.Serve(lis); err != nil {
 		return err
 	}

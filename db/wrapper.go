@@ -41,3 +41,28 @@ func SaveHandHistory(card *hands.Card, userId String) error {
 
 	return nil
 }
+
+func CreateUser(displayName string) error {
+	client := NewClient()
+	if err := client.Connect(); err != nil {
+		return err
+	}
+
+	defer func() {
+		if err := client.Disconnect(); err != nil {
+			panic(err)
+		}
+	}()
+
+	ctx := context.Background()
+
+	user, err := client.User.CreateOne(
+		User.DisplayName.Set(displayName),
+	).Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("Failed to create user")
+	}
+
+	log.Printf("User created: %v", user)
+	return nil
+}
