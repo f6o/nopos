@@ -24,7 +24,7 @@ func SaveHandHistory(card *hands.Card, userId String) error {
 
 	user, err := client.User.FindFirst(User.ID.Equals(userId)).Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("User not found")
+		return fmt.Errorf("User not found: %v", err)
 	}
 
 	history, err := client.HandHistory.CreateOne(
