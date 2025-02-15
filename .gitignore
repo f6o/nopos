@@ -1,6 +1,7 @@
 ## files
 *~
 .gh_token
+*.db
 
 ## directories
 .vscode
