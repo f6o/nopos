@@ -30,3 +30,16 @@ message Card {
 message Hands {
   repeated Card cards = 1;
 }
+
+service GameManager {
+  rpc AddUser (AddUserRequest) returns (User) {}
+}
+
+message AddUserRequest {
+  string displayName = 1;
+}
+
+message User {
+  string displayName = 1;
+}
+
