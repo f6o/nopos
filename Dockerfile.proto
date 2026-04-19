@@ -1,0 +1,29 @@
+# Builder image for generating Go gRPC stubs from .proto files.
+# Use via the `make proto` target so contributors do not need protoc locally.
+FROM golang:1.22-bookworm
+
+ARG PROTOC_VERSION=25.1
+ARG PROTOC_GEN_GO_VERSION=v1.35.2
+ARG PROTOC_GEN_GO_GRPC_VERSION=v1.5.1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && ARCH="$(dpkg --print-architecture)" \
+    && case "$ARCH" in \
+         amd64) PROTOC_ARCH=x86_64 ;; \
+         arm64) PROTOC_ARCH=aarch_64 ;; \
+         *) echo "unsupported arch: $ARCH" >&2; exit 1 ;; \
+       esac \
+    && curl -fsSL -o /tmp/protoc.zip \
+         "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-${PROTOC_ARCH}.zip" \
+    && unzip -q /tmp/protoc.zip -d /usr/local \
+    && rm /tmp/protoc.zip \
+    && chmod -R a+rX /usr/local/include
+
+RUN go install "google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOC_GEN_GO_VERSION}" \
+    && go install "google.golang.org/grpc/cmd/protoc-gen-go-grpc@${PROTOC_GEN_GO_GRPC_VERSION}" \
+    && chmod -R a+rx /go/bin
+
+WORKDIR /work
+ENTRYPOINT ["protoc"]
